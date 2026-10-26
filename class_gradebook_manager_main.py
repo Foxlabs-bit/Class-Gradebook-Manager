@@ -3,7 +3,7 @@
 import time
 import os
 import sys
-import colorama # will be used later for changing font color in settings
+#import colorama # will be used later for changing font color in settings
 
 all_scores = []
 
