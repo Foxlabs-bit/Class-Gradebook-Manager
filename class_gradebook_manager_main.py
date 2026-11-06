@@ -3,51 +3,21 @@
 import time
 import os
 import sys
-#import colorama # will be used later for changing font color in settings
+import requests
+import colorama
+import colorama
+from colorama import Fore, Back, Style
+colorama.init(autoreset=True)
+font_color = Fore.WHITE
 
 all_scores = []
+
 
 def CS():
      os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def display_menu():
-    CS()
-    #This is a basic loading bar i do not actually know how to make a proper one so this is a makeshift one for now and pray it looks good
-    print("Loading")
-    print("#####")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("##########")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("###############")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("####################")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("#########################")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("##############################")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("###################################")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("########################################")
-    time.sleep(0.1)
-    CS()
-    print("Loading")
-    print("################################################")
     CS()
     print("====================================================")
     print("Welcome to Class Gradebook Manager V1")
@@ -61,7 +31,16 @@ def display_menu():
     print("6. Count passing students")
     print("7. Settings")
     print("8. Exit")
-    input_choice = int(input("Choose an option:"))
+    
+    # Wrapped in try/except so typing letters or long numbers doesn't crash it
+    try:
+        input_choice = int(input("Choose an option: "))
+    except ValueError:
+        print("Invalid input! Please enter a number.")
+        time.sleep(1.5)
+        display_menu()
+        return
+
     if input_choice == 1:
         CS()
         addScores(scores=all_scores)
@@ -85,8 +64,16 @@ def display_menu():
         passing_students(scores=all_scores)
     elif input_choice == 7:
         settings()
-    else:
+    elif input_choice == 8:
         Exit()
+    elif input_choice >= 9:  # Safely placed before the final else block
+        print("Bro why")
+        time.sleep(1.5)
+        display_menu()
+    else:  # Catches negative numbers or other unexpected inputs
+        print("Invalid option.")
+        time.sleep(1.5)
+        display_menu()
 
 
 def addScores(scores):
@@ -113,12 +100,13 @@ def show_Scores(scores):
         time.sleep(2)
         display_menu()
     else:
-        student_number = 1
+        student_number = 0
         print("Scores:")
         for score in scores:
+            student_number += 1
             print("Student " + str(student_number)+ ": " + str(score)) 
-        exit_choice = input("Press enter to return to the main menu: ")
-        if exit_choice == "":
+        input_choice = input("Press enter to return to the main menu: ")
+        if input_choice == "":
             display_menu()
 
 def calculate_Average(scores):
@@ -151,31 +139,94 @@ def highest_and_lowest(scores):
     lowest_score = min(all_scores)
     highest_score = max(all_scores)
     print("==========Statistics==========")
-    print("The lowest score is: " + int(lowest_score))
-    print("The highest score is: " + int(highest_score))
+    print("The lowest score is: " + str(lowest_score))
+    print("The highest score is: " + str(highest_score))
     print("==============================")
     exit_choice = input("Press enter to return to the main menu: ")
     if exit_choice == "":
         display_menu()
 
 def passing_students(scores):
-    #Need to choose a fitting pass score later!!!
-    #Also practice this module when you get time!!! Very important to get this correct
-    for score in scores < 60:
-        print("Students that pass are: ")
+    CS()
+    if not scores:
+        print("No scores recorded yet")
+        exit_choice = input("Press enter to return to the main menu: ")
+        if exit_choice == "":
+            display_menu()
+    else:
+        print("The students that pass are:")
+        passing_count = 0
+        for score in scores:
+            if score >= 50:
+                passing_count += 1 
+                print(str(score))
+        print("Total passing students: " + str(passing_count))
+        input_choice = input("Press enter to return to the main menu")
+        if input_choice == "":
+            display_menu()
 
+def change_font_color():
+    global font_color
+    CS()
+    print("=====================================================")
+    print("Change font color")
+    print("=====================================================")
+    print("1. Red")
+    print("2. Blue")
+    print("3. Green")
+    print("4. Yellow")
+    print("5. Magenta")
+    print("6. White")
+    print("7. Cyan")
+    print("8. Back")
+    choice = int(input("Choose a font color or exit: "))
+    if choice == 1:
+        font_color = Fore.RED
+    elif choice == 2:
+        font_color = Fore.BLUE
+    elif choice == 3:
+        font_color = Fore.GREEN
+    elif choice == 4:
+        font_color = Fore.YELLOW
+    elif choice == 5:
+        font_color = Fore.MAGENTA
+    elif choice == 6:
+        font_color = Fore.WHITE
+    elif choice == 7:
+        font_color = Fore.CYAN
+    elif choice == 8:
+        settings()
+    else:
+        print("Invalid choice!")
+        time.sleep(0.8)
+        change_font_color()
+        return
+
+    print(font_color + "Font color sucessfully changed")
 
 def settings():
-
-
+    CS()
     print("====================================================")
     print("Settings")
     print("====================================================")
     print("Version: Beta v1")
+    print("1. Change font color")
+    print("2. Main menu")
+    exit_choice = int(input("Type a number: "))
+    if exit_choice == 1:
+        change_font_color()
+    elif exit_choice == 2:
+        display_menu()
+    else:
+        print("Oops bad input, try again!")
+        time.sleep(0.8)
+        settings()
+
+
 
 def Exit():
     sys.exit()
 
 
-
+# Start the program
 display_menu()
